@@ -1,0 +1,8 @@
+spring:
+  application:
+    name: Rooms - Spring MVC Security
+
+server:
+  port: 8080
+
+
