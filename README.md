@@ -135,12 +135,11 @@ src/
 
 ## Security
 
-Spring Security is on the classpath and enabled by default. Until a custom `SecurityFilterChain` is added, Spring Boot auto-configures security:
+Spring Security is enabled via `SecurityConfig`, with method-level security (`@EnableMethodSecurity`) for role-based authorization on controllers and services.
 
-- All HTTP endpoints require authentication.
-- A default user is generated at startup. Check the application logs for the generated password (look for a line like `Using generated security password`).
+Role checks enforce the permissions described in [Roles & Permissions](#roles--permissions): privileged roles (`ADMIN`, `SUPER_ADMIN`, `MODERATOR`) manage rooms, topics, and replies platform-wide; standard roles are restricted to their role-dedicated rooms and same-role conversations.
 
-To customize authentication, authorization, and login pages, add a `@Configuration` class that defines a `SecurityFilterChain` bean.
+Authentication and authorization rules are defined in `src/main/java/com/chaoui/rooms/configurations/security/SecurityConfig.java`.
 
 ## Testing
 
