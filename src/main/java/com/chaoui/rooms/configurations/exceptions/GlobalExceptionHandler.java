@@ -1,5 +1,6 @@
 package com.chaoui.rooms.configurations.exceptions;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.AuthenticationException;
@@ -10,10 +11,12 @@ import java.time.Instant;
 import java.util.Map;
 
 @ControllerAdvice
+@Slf4j(topic = "GlobalExceptionHandler")
 public class GlobalExceptionHandler {
 
     @ExceptionHandler(AuthenticationException.class)
     public ResponseEntity<Map<String, Object>> handleException(AuthenticationException e) {
+        log.error("Authentication Exception: {}", e.getMessage());
         e.printStackTrace();
 
         var httpStatus = HttpStatus.UNAUTHORIZED;
