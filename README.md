@@ -16,6 +16,28 @@ In many organizations, different roles operate in silos. Admins configure the sy
 
 Access to each Room is controlled by **role and permissions**. A user only sees and interacts with the Rooms they are authorized to enter. An Admin may have broad visibility across the platform, while a Manager sees their team's Room and any shared spaces they are granted access to.
 
+## Roles & Permissions
+
+Access to rooms, topics, and replies is governed by the user's role.
+
+### Privileged roles (`ADMIN`, `SUPER_ADMIN`, `MODERATOR`)
+
+Users with one of these roles can:
+
+- **View** all rooms
+- **Create** new rooms
+- **Manage** rooms (update, configure, and remove)
+- **Manage** topics and replies across all rooms (create, edit, and delete)
+
+### Standard roles
+
+All other roles (e.g. `PROJECT_MANAGER`, `DEVELOPER`, `TESTER`) have a narrower scope:
+
+- **Create topics** only in rooms dedicated to their own role
+- **Reply** only to topics posted by users who share the same role
+
+This keeps each role's discussions focused within its dedicated space while giving privileged roles full platform oversight.
+
 ### Planned Features
 
 | Feature | Description |
