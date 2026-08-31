@@ -27,8 +27,12 @@ public class SecurityBeans {
             .password("{noop}admin")
             .roles(UserRole.APP_ADMIN.name())
             .build();
+        UserDetails developer = User.withUsername("dev")
+            .password("{noop}dev")
+            .roles(UserRole.DEVELOPER.name(), UserRole.TEAM_LEAD.name())
+            .build();
 
-        return new InMemoryUserDetailsManager(admin);
+        return new InMemoryUserDetailsManager(admin, developer);
     }
 
     @Bean(name = "userDetailsService")

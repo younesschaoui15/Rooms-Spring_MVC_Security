@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+      xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Access Denied · Rooms</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="min-h-screen bg-slate-50 text-slate-800 flex flex-col">
+
+<!-- Navbar -->
+<header class="sticky top-0 z-50 bg-gradient-to-r from-blue-900 via-blue-700 to-cyan-600 shadow-lg">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="flex items-center justify-between h-16">
+            <a th:href="@{/}" class="flex items-center gap-2.5">
+                <div class="flex items-center justify-center w-9 h-9 rounded-lg bg-white/20 border border-white/30">
+                    <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" stroke-width="1.75" viewBox="0 0 24 24" aria-hidden="true">
+                        <path stroke-linecap="round" stroke-linejoin="round"
+                              d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-6l-2-2H5a2 2 0 00-2 2z"/>
+                    </svg>
+                </div>
+                <span class="text-lg font-bold text-white tracking-tight">Rooms</span>
+            </a>
+            <div class="flex items-center gap-4">
+                <div class="hidden sm:flex items-center gap-3">
+                    <div class="text-right">
+                        <p class="text-sm font-semibold text-white leading-tight" sec:authentication="principal.username"></p>
+                        <p class="text-xs text-white/60 leading-tight" sec:authentication="principal.authorities"></p>
+                    </div>
+                    <div class="w-9 h-9 rounded-full bg-gradient-to-br from-sky-300 to-cyan-400 flex items-center justify-center text-sm font-bold text-blue-900 uppercase"
+                         th:text="${#strings.substring(#authentication.name, 0, 1)}">
+                    </div>
+                </div>
+                <a th:href="@{/logout}"
+                   class="inline-flex items-center gap-1.5 rounded-lg bg-white/15 border border-white/25 px-3 py-2 text-sm font-medium text-white hover:bg-white/25 transition">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true">
+                        <path stroke-linecap="round" stroke-linejoin="round"
+                              d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"/>
+                    </svg>
+                    <span class="hidden sm:inline">Logout</span>
+                </a>
+            </div>
+        </div>
+    </div>
+</header>
+
+<!-- Content -->
+<main class="flex-1 flex items-center justify-center px-4 py-16">
+    <div class="w-full max-w-lg text-center">
+
+        <div class="inline-flex items-center justify-center w-20 h-20 rounded-2xl bg-gradient-to-br from-red-100 to-orange-100 mb-6">
+            <svg class="w-10 h-10 text-red-500" fill="none" stroke="currentColor" stroke-width="1.75" viewBox="0 0 24 24" aria-hidden="true">
+                <path stroke-linecap="round" stroke-linejoin="round"
+                      d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/>
+            </svg>
+        </div>
+
+        <p class="text-sm font-bold uppercase tracking-widest text-red-500 mb-2">403</p>
+        <h1 class="text-3xl font-extrabold text-slate-900 tracking-tight">Access Denied</h1>
+        <p class="mt-3 text-base text-slate-500 leading-relaxed">
+            You don't have permission to view this page. Contact your administrator if you believe this is a mistake.
+        </p>
+
+        <div class="mt-6 inline-flex items-center gap-2 rounded-xl bg-white border border-slate-200 shadow-sm px-4 py-2.5 text-sm text-slate-600">
+            <svg class="w-4 h-4 text-slate-400 shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true">
+                <path stroke-linecap="round" stroke-linejoin="round"
+                      d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/>
+            </svg>
+            Signed in as
+            <span class="font-semibold text-slate-800" sec:authentication="principal.username"></span>
+            &middot;
+            <span class="text-slate-400" sec:authentication="principal.authorities"></span>
+        </div>
+
+        <div class="mt-8 flex flex-col sm:flex-row items-center justify-center gap-3">
+            <a th:href="@{/}"
+               class="inline-flex items-center gap-2 rounded-xl bg-gradient-to-r from-blue-700 to-cyan-600 px-6 py-3 text-sm font-semibold text-white shadow-md hover:shadow-lg hover:scale-[1.02] active:scale-[0.98] transition-all duration-200">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true">
+                    <path stroke-linecap="round" stroke-linejoin="round"
+                          d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/>
+                </svg>
+                Back to Home
+            </a>
+            <button type="button" onclick="history.back()"
+                    class="inline-flex items-center gap-2 rounded-xl border border-slate-200 bg-white px-6 py-3 text-sm font-semibold text-slate-700 shadow-sm hover:bg-slate-50 transition">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M10 19l-7-7m0 0l7-7m-7 7h18"/>
+                </svg>
+                Go Back
+            </button>
+        </div>
+
+    </div>
+</main>
+
+<footer class="border-t border-slate-200 bg-white">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+        <p class="text-center text-xs text-slate-400">
+            &copy; 2026 Rooms &middot; Role-based collaboration &middot; Spring MVC Security
+        </p>
+    </div>
+</footer>
+
+</body>
+</html>
