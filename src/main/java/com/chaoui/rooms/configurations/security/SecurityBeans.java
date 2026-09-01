@@ -9,18 +9,45 @@ import org.springframework.security.authentication.dao.DaoAuthenticationProvider
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.provisioning.InMemoryUserDetailsManager;
+import org.springframework.security.provisioning.JdbcUserDetailsManager;
+import org.springframework.security.provisioning.UserDetailsManager;
+
+import javax.sql.DataSource;
 
 @Configuration
 public class SecurityBeans {
 
     @Bean
-    AuthenticationProvider authenticationProvider(@Qualifier("inMemoryUserDetailsManager") UserDetailsService userDetailsService) {
+    AuthenticationProvider authenticationProvider(
+        @Qualifier("JdbcUserDetailsManager") UserDetailsService userDetailsService,
+        @Qualifier("bCryptPasswordEncoder") BCryptPasswordEncoder bCryptPasswordEncoder) {
         DaoAuthenticationProvider daoAuthenticationProvider = new DaoAuthenticationProvider(userDetailsService);
-//        daoAuthenticationProvider.setPasswordEncoder(...);
+        daoAuthenticationProvider.setPasswordEncoder(bCryptPasswordEncoder);
+
         return daoAuthenticationProvider;
     }
 
+    /*
+    * JDBC users from database table "users"
+    * */
+    @Bean(name = "JdbcUserDetailsManager")
+    UserDetailsManager jdbcUserDetailsManager(DataSource dataSource) {
+        JdbcUserDetailsManager jdbcManager = new JdbcUserDetailsManager(dataSource);
+
+        //Map authorities list from user's role list "roles" columns in the database "users" table
+        jdbcManager.setAuthoritiesByUsernameQuery("""
+            select username, unnest(string_to_array(roles, ',')) as authority
+            from "users" where username = ?
+            """);
+
+        return jdbcManager;
+    }
+
+    /*
+    * In memory users
+    * */
     @Bean(name = "inMemoryUserDetailsManager")
     InMemoryUserDetailsManager inMemoryUserDetailsManager() {
         UserDetails admin = User.withUsername("admin")
@@ -35,16 +62,11 @@ public class SecurityBeans {
         return new InMemoryUserDetailsManager(admin, developer);
     }
 
-    @Bean(name = "userDetailsService")
-    UserDetailsService userDetailsService() {
-        return (String username) -> {
-            UserDetails user = User.builder()
-                .username(username)
-                .password("{noop}user") //Hardcoded password
-                .roles(UserRole.ROOM_MODERATOR.name())
-                .build();
-
-            return user;
-        };
+    /*
+    * Password encoder
+    * */
+    @Bean(name = "bCryptPasswordEncoder")
+    BCryptPasswordEncoder bCryptPasswordEncoder() {
+        return new BCryptPasswordEncoder();
     }
 }

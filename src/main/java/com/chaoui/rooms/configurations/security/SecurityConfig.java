@@ -2,6 +2,7 @@ package com.chaoui.rooms.configurations.security;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
@@ -22,7 +23,7 @@ public class SecurityConfig {
                 .anyRequest().authenticated()
             )
             ///Basic auth: send credentials in the HTTP Authorization header (username:password Base64 encoded)
-            //.httpBasic(Customizer.withDefaults())
+            .httpBasic(Customizer.withDefaults())
             ///Enables username/password authentication through a custom HTML login form or Spring's default one
             .formLogin(conf -> conf
                 .loginPage("/login")
