@@ -30,8 +30,8 @@ public class SecurityBeansConfig {
     }
 
     /*
-    * JDBC users from database table "users"
-    * */
+     * JDBC users from database table "users"
+     * */
     @Bean(name = "JdbcUserDetailsManager")
     UserDetailsManager jdbcUserDetailsManager(DataSource dataSource) {
         JdbcUserDetailsManager jdbcManager = new JdbcUserDetailsManager(dataSource);
@@ -46,15 +46,15 @@ public class SecurityBeansConfig {
     }
 
     /*
-    * In memory users
-    * */
+     * In memory users
+     * */
     @Bean(name = "inMemoryUserDetailsManager")
     InMemoryUserDetailsManager inMemoryUserDetailsManager() {
-        UserDetails admin = User.withUsername("admin")
+        UserDetails admin = org.springframework.security.core.userdetails.User.withUsername("admin")
             .password("{noop}admin")
             .roles(UserRole.APP_ADMIN.name())
             .build();
-        UserDetails developer = User.withUsername("dev")
+        UserDetails developer = org.springframework.security.core.userdetails.User.withUsername("dev")
             .password("{noop}dev")
             .roles(UserRole.DEVELOPER.name(), UserRole.TEAM_LEAD.name())
             .build();
@@ -63,8 +63,8 @@ public class SecurityBeansConfig {
     }
 
     /*
-    * Password encoder
-    * */
+     * Password encoder
+     * */
     @Bean(name = "bCryptPasswordEncoder")
     BCryptPasswordEncoder bCryptPasswordEncoder() {
         return new BCryptPasswordEncoder();

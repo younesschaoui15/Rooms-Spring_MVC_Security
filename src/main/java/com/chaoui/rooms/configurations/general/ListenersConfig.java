@@ -1,5 +1,6 @@
 package com.chaoui.rooms.configurations.general;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.event.EventListener;
 import org.springframework.security.authentication.event.AbstractAuthenticationFailureEvent;
@@ -8,6 +9,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
 
 @Configuration
+@Slf4j(topic = "ListenersConfig")
 public class ListenersConfig {
 
     /*
@@ -18,7 +20,7 @@ public class ListenersConfig {
         Authentication auth = authenticationSuccessEvent.getAuthentication();
         UserDetails userDetails = (UserDetails) auth.getPrincipal();
 
-        System.out.println("""
+        log.info("""
             # Authentication Success:
                 User Details: %s
             """.formatted(userDetails));
@@ -37,7 +39,7 @@ public class ListenersConfig {
         var details = auth.getDetails();
         var authorities = auth.getAuthorities();
 
-        System.out.println("""
+        log.warn("""
             # Authentication Failure:
                 Is Authenticated: %s
                 Name: %s

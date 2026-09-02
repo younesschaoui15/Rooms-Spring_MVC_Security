@@ -21,15 +21,16 @@ public class SecurityFilterChainConfig {
                 .anyRequest().authenticated()
             )
             ///Basic auth: send credentials in the HTTP Authorization header (username:password Base64 encoded)
-            .httpBasic(Customizer.withDefaults())
+            //.httpBasic(Customizer.withDefaults())
             ///Enables username/password authentication through a custom HTML login form or Spring's default one
             .formLogin(conf -> conf
                 .loginPage("/login")
                 .loginProcessingUrl("/authenticate")
+                .defaultSuccessUrl("/", true)
                 .permitAll()
             )
             .logout(conf -> conf
-                .logoutSuccessUrl("/login")
+                .logoutSuccessUrl("/login?logout")
                 .invalidateHttpSession(true)
                 .deleteCookies("JSESSIONID")
                 .clearAuthentication(true)
