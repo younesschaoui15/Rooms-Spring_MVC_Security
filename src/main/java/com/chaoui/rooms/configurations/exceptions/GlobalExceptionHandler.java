@@ -1,5 +1,6 @@
 package com.chaoui.rooms.configurations.exceptions;
 
+import jakarta.persistence.EntityNotFoundException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -25,6 +26,22 @@ public class GlobalExceptionHandler {
             "Datetime", Instant.now(),
             "Status", httpStatus.value(),
             "Message", "Invalid username or password"
+        );
+
+        return ResponseEntity.status(httpStatus).body(error);
+    }
+
+    @ExceptionHandler(EntityNotFoundException.class)
+    public ResponseEntity<Map<String, Object>> handleException(EntityNotFoundException e) {
+        log.error("Entity Not Found Exception: {}", e.getMessage());
+        e.printStackTrace();
+
+        var httpStatus = HttpStatus.NOT_FOUND;
+
+        Map<String, Object> error = Map.of(
+            "Datetime", Instant.now(),
+            "Status", httpStatus.value(),
+            "Message", "Entity not found"
         );
 
         return ResponseEntity.status(httpStatus).body(error);
