@@ -8,6 +8,7 @@ import org.springframework.security.config.annotation.method.configuration.Enabl
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.AuthenticationFailureHandler;
 
 @Configuration
 @EnableMethodSecurity
@@ -16,6 +17,7 @@ public class SecurityFilterChainConfig {
 
     @Bean
     SecurityFilterChain filterChain(HttpSecurity http,
+                                    @Qualifier("loginFailureHandler") AuthenticationFailureHandler loginFailureHandler,
                                     @Qualifier("authenticationFailureHandler") AuthenticationEntryPoint authenticationEntryPoint) throws Exception {
         return http
             .csrf(conf -> conf
@@ -24,6 +26,7 @@ public class SecurityFilterChainConfig {
             )
             .authorizeHttpRequests(conf -> conf
                 .requestMatchers(
+                    "/login/**",
                     "/error"
                 ).permitAll()
                 .anyRequest().authenticated()
@@ -35,6 +38,7 @@ public class SecurityFilterChainConfig {
                 .loginPage("/login")
                 .loginProcessingUrl("/authenticate")
                 .defaultSuccessUrl("/", true)
+                .failureHandler(loginFailureHandler)
                 .permitAll()
             )
             .logout(conf -> conf

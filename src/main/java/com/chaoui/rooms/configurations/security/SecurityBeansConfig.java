@@ -17,6 +17,7 @@ import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.security.provisioning.JdbcUserDetailsManager;
 import org.springframework.security.provisioning.UserDetailsManager;
 import org.springframework.security.web.AuthenticationEntryPoint;
+import org.springframework.security.web.authentication.AuthenticationFailureHandler;
 
 import javax.sql.DataSource;
 
@@ -94,13 +95,24 @@ public class SecurityBeansConfig {
     }
 
     /*
-     * Authentication failure handler
+     * Authentication failure handler (ex: try to access /endpoint without authentication)
      * */
     @Bean("authenticationFailureHandler")
     AuthenticationEntryPoint authenticationEntryPoint() {
         return (request, response, authException) -> {
-            log.warn("Authentication failure for request [{}] : {}", request.getRequestURL(), authException.getMessage());
-            response.sendRedirect("/login?error");
+            log.warn("Authentication is required for request [{}] : {}", request.getRequestURL(), authException.getMessage());
+            response.sendRedirect(request.getContextPath() + "/login?error="+authException.getMessage());
+        };
+    }
+
+    /*
+    * Login failure handler (ex: logging in with invalid username or password)
+    * */
+    @Bean("loginFailureHandler")
+    AuthenticationFailureHandler loginFailureHandler() {
+        return (request, response, authException) -> {
+            log.warn("Login failure : {}", authException.getMessage());
+            response.sendRedirect(request.getContextPath() + "/login?error=Invalid username or password");
         };
     }
 }

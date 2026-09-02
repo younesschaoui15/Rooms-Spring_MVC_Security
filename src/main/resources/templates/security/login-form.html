@@ -44,11 +44,12 @@
             </svg>
             <div>
                 <p class="text-sm font-semibold text-white">Invalid credentials</p>
-                <p class="text-sm text-red-100/80 mt-0.5">Check your username and password.</p>
+                <p th:if="${param.error!=null}" th:text="${param.error}" class="text-sm text-red-100/80 mt-0.5"></p>
+                <p th:if="${param.error==null}" class="text-sm text-red-100/80 mt-0.5">Check your username and password.</p>
             </div>
         </div>
         
-        <!-- Logout success alert -->
+        <!-- Log out success alert -->
         <div th:if="${param.logout}"
              class="mb-6 flex items-start gap-3 rounded-xl bg-emerald-500/20 border border-emerald-300/40 backdrop-blur-sm px-4 py-3"
              role="status">
