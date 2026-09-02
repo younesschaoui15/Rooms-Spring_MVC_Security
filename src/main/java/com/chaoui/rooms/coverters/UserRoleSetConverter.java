@@ -12,7 +12,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 @Converter
-@Slf4j(topic = "UserRoleSetConverter")
+@Slf4j
 public class UserRoleSetConverter implements AttributeConverter<Set<UserRole>, String> {
 
     @Override

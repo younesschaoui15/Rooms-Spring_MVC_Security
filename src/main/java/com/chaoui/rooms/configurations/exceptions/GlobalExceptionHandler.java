@@ -12,7 +12,7 @@ import java.time.Instant;
 import java.util.Map;
 
 @ControllerAdvice
-@Slf4j(topic = "GlobalExceptionHandler")
+@Slf4j
 public class GlobalExceptionHandler {
 
     @ExceptionHandler(AuthenticationException.class)

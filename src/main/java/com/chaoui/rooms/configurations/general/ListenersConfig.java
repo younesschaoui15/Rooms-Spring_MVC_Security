@@ -9,7 +9,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
 
 @Configuration
-@Slf4j(topic = "ListenersConfig")
+@Slf4j
 public class ListenersConfig {
 
     /*

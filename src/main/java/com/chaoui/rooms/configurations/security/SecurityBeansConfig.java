@@ -22,7 +22,7 @@ import org.springframework.security.web.authentication.AuthenticationFailureHand
 import javax.sql.DataSource;
 
 @Configuration
-@Slf4j(topic = "SecurityBeansConfig")
+@Slf4j
 public class SecurityBeansConfig {
 
     @Bean

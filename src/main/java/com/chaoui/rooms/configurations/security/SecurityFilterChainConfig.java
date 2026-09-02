@@ -12,7 +12,7 @@ import org.springframework.security.web.authentication.AuthenticationFailureHand
 
 @Configuration
 @EnableMethodSecurity
-@Slf4j(topic = "SecurityFilterChainConfig")
+@Slf4j
 public class SecurityFilterChainConfig {
 
     @Bean
