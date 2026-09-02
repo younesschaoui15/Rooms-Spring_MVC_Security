@@ -1,0 +1,26 @@
+server:
+  port: 8080
+
+spring:
+  datasource:
+    #Docker PostgreSQL db container
+    url: jdbc:postgresql://localhost:5454/rooms-db
+    username: root
+    password: root
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: false
+    properties:
+      hibernate:
+        format_sql: false
+
+logging:
+  level:
+    root: INFO
+    org.hibernate.SQL: DEBUG
+    org.springframework.web: DEBUG
+    org.springframework.security: DEBUG
+
+
+
