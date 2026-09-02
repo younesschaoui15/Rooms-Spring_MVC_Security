@@ -135,7 +135,7 @@ src/
 
 ## Security
 
-Spring Security is enabled via `SecurityConfig`, with method-level security (`@EnableMethodSecurity`) for role-based authorization on controllers and services.
+Spring Security is enabled via `SecurityFilterChainConfig`, with method-level security (`@EnableMethodSecurity`) for role-based authorization on controllers and services.
 
 Role checks enforce the permissions described in [Roles & Permissions](#roles--permissions): privileged roles (`ADMIN`, `SUPER_ADMIN`, `MODERATOR`) manage rooms, topics, and replies platform-wide; standard roles are restricted to their role-dedicated rooms and same-role conversations.
 

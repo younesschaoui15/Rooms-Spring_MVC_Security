@@ -17,7 +17,7 @@ import org.springframework.security.provisioning.UserDetailsManager;
 import javax.sql.DataSource;
 
 @Configuration
-public class SecurityBeans {
+public class SecurityBeansConfig {
 
     @Bean
     AuthenticationProvider authenticationProvider(
