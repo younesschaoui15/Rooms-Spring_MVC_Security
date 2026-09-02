@@ -1,5 +1,7 @@
 package com.chaoui.rooms.configurations.security;
 
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.Customizer;
@@ -9,11 +11,16 @@ import org.springframework.security.web.SecurityFilterChain;
 
 @Configuration
 @EnableMethodSecurity
+@Slf4j(topic = "SecurityFilterChainConfig")
 public class SecurityFilterChainConfig {
 
     @Bean
     SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         return http
+            .csrf(conf -> conf
+                //For testing REST API
+                .ignoringRequestMatchers("/administration/new-user")
+            )
             .authorizeHttpRequests(conf -> conf
                 .requestMatchers(
                     "/error"

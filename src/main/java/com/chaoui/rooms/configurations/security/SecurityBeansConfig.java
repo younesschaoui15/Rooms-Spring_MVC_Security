@@ -1,32 +1,55 @@
 package com.chaoui.rooms.configurations.security;
 
+import com.chaoui.rooms.entities.User;
 import com.chaoui.rooms.enums.UserRole;
+import com.chaoui.rooms.repositories.UserRepository;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
-import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.security.provisioning.JdbcUserDetailsManager;
 import org.springframework.security.provisioning.UserDetailsManager;
+import org.springframework.security.web.AuthenticationEntryPoint;
 
 import javax.sql.DataSource;
 
 @Configuration
+@Slf4j(topic = "SecurityBeansConfig")
 public class SecurityBeansConfig {
 
     @Bean
     AuthenticationProvider authenticationProvider(
-        @Qualifier("JdbcUserDetailsManager") UserDetailsService userDetailsService,
+        @Qualifier("userDetailsService") UserDetailsService userDetailsService,
         @Qualifier("bCryptPasswordEncoder") BCryptPasswordEncoder bCryptPasswordEncoder) {
         DaoAuthenticationProvider daoAuthenticationProvider = new DaoAuthenticationProvider(userDetailsService);
         daoAuthenticationProvider.setPasswordEncoder(bCryptPasswordEncoder);
 
         return daoAuthenticationProvider;
+    }
+
+    @Bean(name = "userDetailsService")
+    UserDetailsService userDetailsService(UserRepository userRepository) {
+        return (String username) -> {
+            User user = userRepository.findByUsername(username)
+                .orElseThrow(() -> new UsernameNotFoundException("User Not Found!"));
+
+            String[] userRoles = user.getRoles().stream()
+                .map(Enum::name)
+                .toArray(String[]::new);
+
+            return org.springframework.security.core.userdetails.User
+                .withUsername(user.getUsername())
+                .password(user.getPassword())
+                .roles(userRoles)
+                .build();
+        };
     }
 
     /*
@@ -68,5 +91,16 @@ public class SecurityBeansConfig {
     @Bean(name = "bCryptPasswordEncoder")
     BCryptPasswordEncoder bCryptPasswordEncoder() {
         return new BCryptPasswordEncoder();
+    }
+
+    /*
+     * Authentication failure handler
+     * */
+    @Bean("authenticationFailureHandler")
+    AuthenticationEntryPoint authenticationEntryPoint() {
+        return (request, response, authException) -> {
+            log.warn("Authentication failure for request [{}] : {}", request.getRequestURL(), authException.getMessage());
+            response.sendRedirect("/login?error");
+        };
     }
 }
