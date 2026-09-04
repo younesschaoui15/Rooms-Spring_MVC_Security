@@ -38,7 +38,7 @@ public class SecurityFilterChainConfig {
                 .loginPage("/login")
                 .loginProcessingUrl("/authenticate")
                 .defaultSuccessUrl("/", true)
-                .failureHandler(loginFailureHandler)
+                .failureHandler(loginFailureHandler) //Login failure handler
                 .permitAll()
             )
             .logout(conf -> conf
@@ -50,7 +50,7 @@ public class SecurityFilterChainConfig {
             )
             .exceptionHandling(conf -> conf
                 .accessDeniedPage("/access-denied")
-                .authenticationEntryPoint(authenticationEntryPoint)
+                .authenticationEntryPoint(authenticationEntryPoint) //Authentication failure handler
             )
             .build();
     }

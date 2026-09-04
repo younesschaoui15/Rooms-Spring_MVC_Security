@@ -1,8 +1,11 @@
+server:
+  port: 8080
+
 spring:
   application:
     name: Rooms - Spring MVC Security
 
   profiles:
-    active: local
+    active: dev
 
 
