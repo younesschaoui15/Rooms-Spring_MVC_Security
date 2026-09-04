@@ -4,8 +4,6 @@ import com.chaoui.rooms.coverters.UserRoleSetConverter;
 import com.chaoui.rooms.enums.UserRole;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.Size;
 import lombok.*;
 
 import java.util.HashSet;
@@ -24,13 +22,6 @@ public class User extends AuditableEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
-    @Column(unique = true, nullable = false)
-    @NotBlank
-    private String username;
-    @Column
-    @NotBlank
-    @Size(min = 8, max = 100)
-    private String password;
     @Column
     private String firstName;
     @Column
@@ -44,6 +35,10 @@ public class User extends AuditableEntity {
     @Column(name = "roles")
     @Builder.Default
     private Set<UserRole> roles = new HashSet<>();
+
+    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER, optional = false)
+    @JoinColumn(name = "credentials_id", nullable = false)
+    private UserCredentials credentials;
 }
 
 

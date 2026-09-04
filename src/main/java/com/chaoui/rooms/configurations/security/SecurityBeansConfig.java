@@ -38,7 +38,7 @@ public class SecurityBeansConfig {
     @Bean(name = "userDetailsService")
     UserDetailsService userDetailsService(UserRepository userRepository) {
         return (String username) -> {
-            User user = userRepository.findByUsername(username)
+            User user = userRepository.findByCredentials_Username(username)
                 .orElseThrow(() -> new UsernameNotFoundException("User Not Found!"));
 
             String[] userRoles = user.getRoles().stream()
@@ -46,8 +46,8 @@ public class SecurityBeansConfig {
                 .toArray(String[]::new);
 
             return org.springframework.security.core.userdetails.User
-                .withUsername(user.getUsername())
-                .password(user.getPassword())
+                .withUsername(user.getCredentials().getUsername())
+                .password(user.getCredentials().getPassword())
                 .roles(userRoles)
                 .build();
         };
