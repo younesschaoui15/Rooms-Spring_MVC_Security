@@ -25,20 +25,21 @@ public class UserService {
         user.getCredentials().setPassword(
             bCryptPasswordEncoder.encode(user.getCredentials().getPassword())
         );
-        User savedUser = userRepository.save(user);
-        System.out.println("User registered successfully: " + savedUser);
 
-        return savedUser;
+        return userRepository.save(user);
     }
 
     public UUID deleteUser(User user) {
-        UUID id = user.getId();
         userRepository.delete(user);
-        System.out.println("User deleted successfully: " + id);
-        return id;
+
+        return user.getId();
     }
 
     public User finUserByUsername(String username) {
         return userRepository.findByCredentials_Username(username).orElseThrow();
+    }
+
+    public User finUserById(UUID id) {
+        return userRepository.findById(id).orElseThrow();
     }
 }
