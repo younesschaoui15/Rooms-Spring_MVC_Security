@@ -1,11 +1,14 @@
 package com.chaoui.rooms.entities;
 
+import com.chaoui.rooms.enums.UserRole;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.BatchSize;
 
+import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
-import java.util.UUID;
+import java.util.Set;
 
 
 @Entity
@@ -19,16 +22,21 @@ import java.util.UUID;
 public class Room extends AuditableEntity {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.UUID)
-    private UUID id;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
     @Column
     private String name;
     @Column(length = 512)
     private String description;
+    @Column
+    @Enumerated(EnumType.STRING)
+    private Set<UserRole> allowedRoles = new HashSet<>();
 
-    @OneToMany(mappedBy = "room", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "room",
+        cascade = CascadeType.ALL,
+        fetch = FetchType.LAZY)
     @BatchSize(size = 20)
-    private List<Topic> topics;
+    private List<Topic> topics = new ArrayList<>();
 
 }
 

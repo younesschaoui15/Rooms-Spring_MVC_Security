@@ -5,8 +5,6 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import lombok.*;
 
-import java.util.UUID;
-
 @Entity
 @Table(name = "replies")
 @Data
@@ -18,8 +16,8 @@ import java.util.UUID;
 public class Reply extends AuditableEntity {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.UUID)
-    private UUID id;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
     @NotBlank
     @Lob
@@ -33,6 +31,11 @@ public class Reply extends AuditableEntity {
     @JoinColumn(name = "topic_id")
     @ToString.Exclude
     private Topic topic;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id")
+    @ToString.Exclude
+    private User user;
 }
 
 

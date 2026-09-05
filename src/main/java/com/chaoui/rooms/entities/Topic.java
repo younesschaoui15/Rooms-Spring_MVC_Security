@@ -1,15 +1,14 @@
 package com.chaoui.rooms.entities;
 
 import com.chaoui.rooms.enums.ContentStatus;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 import lombok.*;
 import org.hibernate.annotations.BatchSize;
 
+import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
 
 @Entity
 @Table(name = "topics")
@@ -17,35 +16,44 @@ import java.util.UUID;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-@ToString(callSuper = true, exclude = {"room", "replies"})
+@ToString(callSuper = true)
 @EqualsAndHashCode(callSuper = true)
 public class Topic extends AuditableEntity {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.UUID)
-    private UUID id;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
+    @Column(nullable = false)
     @NotBlank
     @Size(max = 255)
-    @Column(nullable = false)
     private String title;
 
+    @Column
     @NotBlank
     @Lob
-    @Column
     private String post;
 
+    @Column
     @Enumerated(EnumType.STRING)
     private ContentStatus status = ContentStatus.PUBLISHED;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "room_id")
-    @JsonIgnore
+    @JoinColumn(name = "room_id", nullable = false)
+    @ToString.Exclude
+    @EqualsAndHashCode.Exclude
     private Room room;
 
-    @OneToMany(mappedBy = "topic", fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id", nullable = false)
+    @ToString.Exclude
+    @EqualsAndHashCode.Exclude
+    private User user;
+
+    @OneToMany(mappedBy = "topic", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @BatchSize(size = 10)
-    //@JsonIgnore //To not include replies in the response when fetching an author (No additional query needed for reply list)
-    private List<Reply> replies;
+    @ToString.Exclude
+    @EqualsAndHashCode.Exclude
+    private List<Reply> replies = new ArrayList<>();
 }
 

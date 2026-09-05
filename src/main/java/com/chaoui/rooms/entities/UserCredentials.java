@@ -3,10 +3,7 @@ package com.chaoui.rooms.entities;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 @Entity
 @Table(name = "user_credentials")
@@ -28,5 +25,7 @@ public class UserCredentials {
     private String password;
 
     @OneToOne(mappedBy = "credentials")
+    @ToString.Exclude
+    @EqualsAndHashCode.Exclude
     private User user;
 }
