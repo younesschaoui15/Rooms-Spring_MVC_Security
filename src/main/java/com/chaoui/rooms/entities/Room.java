@@ -30,12 +30,14 @@ public class Room extends AuditableEntity {
     private String description;
     @Column
     @Enumerated(EnumType.STRING)
+    @Builder.Default
     private Set<UserRole> allowedRoles = new HashSet<>();
 
     @OneToMany(mappedBy = "room",
         cascade = CascadeType.ALL,
         fetch = FetchType.LAZY)
     @BatchSize(size = 20)
+    @Builder.Default
     private List<Topic> topics = new ArrayList<>();
 
 }

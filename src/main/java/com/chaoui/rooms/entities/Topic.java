@@ -29,13 +29,13 @@ public class Topic extends AuditableEntity {
     @Size(max = 255)
     private String title;
 
-    @Column
+    @Column(columnDefinition = "TEXT")
     @NotBlank
-    @Lob
     private String post;
 
     @Column
     @Enumerated(EnumType.STRING)
+    @Builder.Default
     private ContentStatus status = ContentStatus.PUBLISHED;
 
     @ManyToOne(fetch = FetchType.LAZY)
@@ -52,6 +52,7 @@ public class Topic extends AuditableEntity {
 
     @OneToMany(mappedBy = "topic", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @BatchSize(size = 10)
+    @Builder.Default
     @ToString.Exclude
     @EqualsAndHashCode.Exclude
     private List<Reply> replies = new ArrayList<>();

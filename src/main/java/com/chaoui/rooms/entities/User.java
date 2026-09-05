@@ -1,6 +1,5 @@
 package com.chaoui.rooms.entities;
 
-import com.chaoui.rooms.coverters.UserRoleSetConverter;
 import com.chaoui.rooms.enums.UserRole;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
@@ -22,17 +21,24 @@ public class User extends AuditableEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
+
     @Column
     private String firstName;
+
     @Column
     private String lastName;
+
     @Column(unique = true)
     @Email
     private String email;
+
     @Column
+    @Builder.Default
     private boolean enabled = true;
-    @Convert(converter = UserRoleSetConverter.class)
-    @Column(name = "roles")
+
+    @Column
+    //@Convert(converter = UserRoleSetConverter.class) //optional (use converters for complex types)
+    @Enumerated(EnumType.STRING)
     @Builder.Default
     private Set<UserRole> roles = new HashSet<>();
 

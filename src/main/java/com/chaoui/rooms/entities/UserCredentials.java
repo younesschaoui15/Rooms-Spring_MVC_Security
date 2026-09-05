@@ -16,9 +16,11 @@ public class UserCredentials {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
     @Column(unique = true, nullable = false)
     @NotBlank
     private String username;
+
     @Column
     @NotBlank
     @Size(min = 8, max = 100)

@@ -19,12 +19,13 @@ public class Reply extends AuditableEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(nullable = false)
     @NotBlank
     @Lob
-    @Column(nullable = false)
     private String content;
 
     @Enumerated(EnumType.STRING)
+    @Builder.Default
     private ContentStatus status = ContentStatus.PUBLISHED;
 
     @ManyToOne(fetch = FetchType.LAZY)
