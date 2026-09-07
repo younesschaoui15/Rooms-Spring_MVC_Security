@@ -36,7 +36,7 @@ public class Room extends AuditableEntity {
     @OneToMany(mappedBy = "room",
         cascade = CascadeType.ALL,
         fetch = FetchType.LAZY)
-    @BatchSize(size = 20)
+    @BatchSize(size = 5)
     @Builder.Default
     private List<Topic> topics = new ArrayList<>();
 

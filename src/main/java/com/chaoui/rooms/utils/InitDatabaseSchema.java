@@ -1,9 +1,6 @@
 package com.chaoui.rooms.utils;
 
-import com.chaoui.rooms.entities.Room;
-import com.chaoui.rooms.entities.Topic;
-import com.chaoui.rooms.entities.User;
-import com.chaoui.rooms.entities.UserCredentials;
+import com.chaoui.rooms.entities.*;
 import com.chaoui.rooms.enums.UserRole;
 import com.chaoui.rooms.exceptions.RoomAccessDeniedException;
 import com.chaoui.rooms.services.RoomService;
@@ -13,6 +10,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.*;
+import java.util.stream.IntStream;
 
 @Component
 public class InitDatabaseSchema {
@@ -76,19 +74,17 @@ public class InitDatabaseSchema {
 
     @Transactional
     public List<Topic> initTopics(UUID userId, Long roomId) {
+        String text = "Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem";
 
-        List<Topic> topics = List.of(
-            Topic.builder()
-                .title("Topic 1")
-                .post("Topic 1 post...")
-                .build(),
-            Topic.builder()
-                .title("Topic 2")
-                .post("Topic 2 post...")
-                .build()
-        );
-
-        return topics.stream()
+        List<Topic> topics = IntStream.rangeClosed(1, 20)
+            .mapToObj(i -> Topic.builder()
+                .title("Topic " + i + " - Room: " + roomId)
+                .post("Topic " + i + " post "+text)
+                .replies(List.of(
+                    new Reply(null, "comment "+i, null, null, null),
+                    new Reply(null, "second comment "+i, null, null, null)
+                ))
+                .build())
             .map(topic -> {
                 try {
                     return topicService.createTopic(topic, roomId, userId);
@@ -99,6 +95,8 @@ public class InitDatabaseSchema {
             })
             .filter(Objects::nonNull)
             .toList();
+
+        return topics;
     }
 
     @Transactional

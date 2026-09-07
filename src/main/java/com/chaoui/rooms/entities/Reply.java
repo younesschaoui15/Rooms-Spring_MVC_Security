@@ -19,9 +19,8 @@ public class Reply extends AuditableEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false)
+    @Column(columnDefinition = "TEXT", nullable = false)
     @NotBlank
-    @Lob
     private String content;
 
     @Enumerated(EnumType.STRING)
