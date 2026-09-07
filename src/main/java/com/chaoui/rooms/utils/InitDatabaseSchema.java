@@ -9,6 +9,7 @@ import com.chaoui.rooms.services.UserService;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
 import java.util.*;
 import java.util.stream.IntStream;
 
@@ -63,7 +64,18 @@ public class InitDatabaseSchema {
             Room.builder()
                 .name("Managers Room")
                 .description("Room only for managers")
+                .allowedRoles(Set.of(UserRole.PROJECT_MANAGER))
+                .build(),
+            Room.builder()
+                .name("Managers & POs Room")
+                .description("Room for managers and product owners")
                 .allowedRoles(Set.of(UserRole.PRODUCT_OWNER, UserRole.PROJECT_MANAGER))
+                .announcements(List.of(
+                    Announcement.builder()
+                        .expirationDateTime(LocalDateTime.now().plusDays(10))
+                        .content("Don't forget to finish your tasks for this sprint!")
+                        .build()
+                ))
                 .build()
         );
 
@@ -79,10 +91,10 @@ public class InitDatabaseSchema {
         List<Topic> topics = IntStream.rangeClosed(1, 20)
             .mapToObj(i -> Topic.builder()
                 .title("Topic " + i + " - Room: " + roomId)
-                .post("Topic " + i + " post "+text)
+                .post("Topic " + i + " post " + text)
                 .replies(List.of(
-                    new Reply(null, "comment "+i, null, null, null),
-                    new Reply(null, "second comment "+i, null, null, null)
+                    new Reply(null, "comment " + i, null, null, null),
+                    new Reply(null, "second comment " + i, null, null, null)
                 ))
                 .build())
             .map(topic -> {

@@ -28,8 +28,12 @@ public class RoomService {
     }
 
     public List<Room> getRoomsWithRoles(Set<UserRole> roles) {
-        return roomRepository.findDistinctByAllowedRoles(roles)
+        IO.println("# roles: "+ roles);
+        var rooms = roomRepository.findRoomsByAllowedRoles(roles)
             .orElse(Collections.emptyList());
+        IO.println("# rooms: "+ rooms);
+
+        return rooms;
     }
 
     @Transactional(readOnly = true)
