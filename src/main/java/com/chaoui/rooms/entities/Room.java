@@ -33,9 +33,7 @@ public class Room extends AuditableEntity {
     @Builder.Default
     private Set<UserRole> allowedRoles = new HashSet<>();
 
-    @OneToMany(mappedBy = "room",
-        cascade = CascadeType.ALL,
-        fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "room", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @BatchSize(size = 5)
     @Builder.Default
     private List<Topic> topics = new ArrayList<>();
