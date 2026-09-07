@@ -102,7 +102,7 @@ public class InitDatabaseSchema {
     @Transactional
     public Optional<UUID> deleteUserById(UUID id) {
         try {
-            User user = userService.finUserById(id);
+            User user = userService.getUserById(id);
             return Optional.of(userService.deleteUser(user));
         } catch (Exception e) {
             System.err.println("# Error (deleteUserById) : " + e.getMessage());
@@ -113,7 +113,7 @@ public class InitDatabaseSchema {
     @Transactional
     protected Optional<UUID> deleteUserByUsername(String username) {
         try {
-            User user = userService.finUserByUsername(username);
+            User user = userService.getUserByUsername(username).orElseThrow();
             return Optional.of(userService.deleteUser(user));
         } catch (Exception e) {
             System.err.println("# Error (deleteUserByUsername) : " + e.getMessage());

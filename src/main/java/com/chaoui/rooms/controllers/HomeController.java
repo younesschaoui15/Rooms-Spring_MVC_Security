@@ -1,5 +1,8 @@
 package com.chaoui.rooms.controllers;
 
+import com.chaoui.rooms.services.RoomService;
+import com.chaoui.rooms.services.UserService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.context.SecurityContext;
@@ -11,14 +14,22 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 @Controller
 @RequestMapping("/")
+@RequiredArgsConstructor
 public class HomeController {
 
+    private final RoomService roomService;
+    private final UserService userService;
+
     @GetMapping("/")
-    public String home(@AuthenticationPrincipal UserDetails userDetails,
-                       SecurityContext context) {
+    public String home(@AuthenticationPrincipal UserDetails authenticatedUser,
+                       SecurityContext context,
+                       Model model) {
 //        System.out.println("###### Home Controller ######");
 //        System.out.println("# Context: " + context.toString());
-//        System.out.println("# UserDetails: " + userDetails);
+//        System.out.println("# UserDetails: " + authenticatedUser);
+
+        var rooms = userService.getRooms(authenticatedUser.getUsername());
+        model.addAttribute("rooms", rooms);
 
         return "home";
     }

@@ -90,7 +90,7 @@
             </div>
             <div>
                 <p class="text-sm font-medium text-slate-500">Your Rooms</p>
-                <p class="mt-1 text-2xl font-bold text-slate-900">—</p>
+                <p class="mt-1 text-2xl font-bold text-slate-900" th:text="${#lists.size(rooms)}">0</p>
                 <p class="mt-1 text-xs text-slate-400">Based on your role</p>
             </div>
         </div>
@@ -137,7 +137,8 @@
                     <p class="text-sm text-slate-500 mt-0.5">Spaces available for your role</p>
                 </div>
                 <div class="p-6">
-                    <div class="flex flex-col items-center justify-center py-10 text-center">
+                    <div th:if="${#lists.isEmpty(rooms)}"
+                         class="flex flex-col items-center justify-center py-10 text-center">
                         <div class="w-14 h-14 rounded-2xl bg-gradient-to-br from-blue-100 to-cyan-100 flex items-center justify-center mb-4">
                             <svg class="w-7 h-7 text-blue-600" fill="none" stroke="currentColor" stroke-width="1.75" viewBox="0 0 24 24" aria-hidden="true">
                                 <path stroke-linecap="round" stroke-linejoin="round"
@@ -147,6 +148,29 @@
                         <p class="text-sm font-medium text-slate-600">No rooms to display yet</p>
                         <p class="text-xs text-slate-400 mt-1 max-w-xs">Rooms will appear here once they are created and assigned to your role.</p>
                     </div>
+
+                    <ul th:unless="${#lists.isEmpty(rooms)}" class="divide-y divide-slate-100 -mx-2">
+                        <li th:each="room : ${rooms}">
+                            <a th:href="@{/rooms/{id}(id=${room.id})}"
+                               class="flex items-center gap-4 rounded-xl px-3 py-4 hover:bg-blue-50 transition group">
+                                <div class="flex-shrink-0 w-11 h-11 rounded-xl bg-gradient-to-br from-blue-100 to-cyan-100 flex items-center justify-center group-hover:from-blue-200 group-hover:to-cyan-200 transition">
+                                    <svg class="w-5 h-5 text-blue-600" fill="none" stroke="currentColor" stroke-width="1.75" viewBox="0 0 24 24" aria-hidden="true">
+                                        <path stroke-linecap="round" stroke-linejoin="round"
+                                              d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-6l-2-2H5a2 2 0 00-2 2z"/>
+                                    </svg>
+                                </div>
+                                <div class="min-w-0 flex-1">
+                                    <p class="text-sm font-semibold text-slate-900 group-hover:text-blue-700 transition"
+                                       th:text="${room.name}">Room name</p>
+                                    <p class="mt-0.5 text-xs text-slate-500 truncate"
+                                       th:text="${room.description}">Room description</p>
+                                </div>
+                                <svg class="w-5 h-5 text-slate-300 group-hover:text-blue-500 transition flex-shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/>
+                                </svg>
+                            </a>
+                        </li>
+                    </ul>
                 </div>
             </div>
 

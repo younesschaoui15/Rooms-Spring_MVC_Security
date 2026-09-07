@@ -2,34 +2,40 @@ package com.chaoui.rooms.services;
 
 import com.chaoui.rooms.entities.Room;
 import com.chaoui.rooms.entities.Topic;
+import com.chaoui.rooms.enums.UserRole;
 import com.chaoui.rooms.repositories.RoomRepository;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
+import java.util.Set;
 
 @Service
+@RequiredArgsConstructor
 public class RoomService {
 
     private final RoomRepository roomRepository;
 
-    public RoomService(RoomRepository roomRepository) {
-        this.roomRepository = roomRepository;
-    }
-
-    public Room findRoomById(Long id) {
-        return roomRepository.findById(id).orElseThrow();
+    public Optional<Room> getRoomById(Long id) {
+        return roomRepository.findById(id);
     }
 
     public Room createRoom(Room room) {
         return roomRepository.save(room);
     }
 
-    @Transactional(readOnly = true)
-    public List<Topic> getTopics(Long id) {
-        Room room = findRoomById(id);
+    public List<Room> getRoomsWithRoles(Set<UserRole> roles) {
+        return roomRepository.findDistinctByAllowedRoles(roles)
+            .orElse(Collections.emptyList());
+    }
 
-        return new ArrayList<>(room.getTopics());
+    @Transactional(readOnly = true)
+    public List<Topic> getRoomTopics(Long roomId) {
+        return getRoomById(roomId)
+            .map(Room::getTopics)
+            .orElse(Collections.emptyList());
     }
 }
