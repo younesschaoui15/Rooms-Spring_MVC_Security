@@ -3,6 +3,7 @@ package com.chaoui.rooms.utils;
 import com.chaoui.rooms.entities.*;
 import com.chaoui.rooms.enums.Importance;
 import com.chaoui.rooms.enums.UserRole;
+import com.chaoui.rooms.exceptions.ContentNotFoundException;
 import com.chaoui.rooms.exceptions.RoomAccessDeniedException;
 import com.chaoui.rooms.services.RoomService;
 import com.chaoui.rooms.services.TopicService;
@@ -124,7 +125,8 @@ public class InitDatabaseSchema {
     public List<Topic> initTopics(UUID userId, Long roomId) {
         String text = "Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem";
 
-        List<Topic> topics = IntStream.rangeClosed(1, 20)
+        int maxTopics = new Random().nextInt(10)+1;
+        List<Topic> topics = IntStream.rangeClosed(1, maxTopics)
             .mapToObj(i -> Topic.builder()
                 .title("Topic " + i + " - Room: " + roomId)
                 .post("Topic " + i + " post " + text)
@@ -136,7 +138,7 @@ public class InitDatabaseSchema {
             .map(topic -> {
                 try {
                     return topicService.createTopic(topic, roomId, userId);
-                } catch (RoomAccessDeniedException e) {
+                } catch (RoomAccessDeniedException | ContentNotFoundException e) {
                     e.printStackTrace();
                     return null;
                 }

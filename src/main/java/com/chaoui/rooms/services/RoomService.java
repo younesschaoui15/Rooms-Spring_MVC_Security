@@ -41,7 +41,22 @@ public class RoomService {
     @Transactional(readOnly = true)
     public List<Topic> getRoomTopics(Long roomId) {
         return getRoomById(roomId)
-            .map(Room::getTopics)
+            .map(room -> {
+                List<Topic> topics = room.getTopics();
+                // Initialize associations while the persistence context is open
+                topics.forEach(topic -> {
+                    if (topic.getUser() != null) {
+                        topic.getUser().getCredentials().getUsername();
+                    }
+                    topic.getReplies().forEach(reply -> {
+                        if (reply.getUser() != null) {
+                            reply.getUser().getCredentials().getUsername();
+                        }
+                    });
+                });
+
+                return topics;
+            })
             .orElse(Collections.emptyList());
     }
 

@@ -92,6 +92,13 @@
             </div>
 
             <div class="p-6">
+                <div th:if="${replySuccess}"
+                     class="mb-4 rounded-lg border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm text-emerald-800"
+                     th:text="${replySuccess}">Reply posted.</div>
+                <div th:if="${replyError}"
+                     class="mb-4 rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-800"
+                     th:text="${replyError}">Reply error.</div>
+
                 <div th:if="${#lists.isEmpty(topics)}"
                      class="flex flex-col items-center justify-center py-10 text-center">
                     <div class="w-14 h-14 rounded-2xl bg-gradient-to-br from-blue-100 to-cyan-100 flex items-center justify-center mb-4">
@@ -104,12 +111,72 @@
                     <p class="text-xs text-slate-400 mt-1 max-w-xs">Topics posted in this room will show up here.</p>
                 </div>
 
-                <ul th:unless="${#lists.isEmpty(topics)}" class="divide-y divide-slate-100 -mx-2">
-                    <li th:each="topic : ${topics}" class="px-3 py-4">
-                        <p class="text-sm font-semibold text-slate-900" th:text="${topic.title}">Topic title</p>
-                        <p class="mt-1 text-xs text-slate-500 line-clamp-2" th:text="${topic.post}">Topic post</p>
-                    </li>
-                </ul>
+                <div th:unless="${#lists.isEmpty(topics)}" class="space-y-6">
+                    <article th:each="topic : ${topics}"
+                             th:id="'topic-' + ${topic.id}"
+                             class="rounded-xl border border-slate-200 overflow-hidden scroll-mt-24">
+
+                        <!-- Topic post -->
+                        <div class="p-5">
+                            <h3 class="text-base font-bold text-slate-900" th:text="${topic.title}">Topic title</h3>
+                            <p class="mt-3 text-sm text-slate-700 leading-relaxed whitespace-pre-wrap"
+                               th:text="${topic.post}">Topic post</p>
+                            <p th:if="${topic.user != null}"
+                               class="mt-3 text-xs text-slate-500">
+                                Posted by
+                                <span class="font-medium text-slate-600"
+                                      th:text="${topic.user.credentials.username}">username</span>
+                            </p>
+                        </div>
+
+                        <!-- Replies for this topic -->
+                        <div class="border-t border-slate-100 bg-slate-50/80 px-5 py-4">
+                            <div class="flex items-center justify-between gap-3 mb-3">
+                                <h4 class="text-xs font-semibold uppercase tracking-wide text-slate-500">Replies</h4>
+                                <span class="text-xs font-medium text-slate-500 bg-white border border-slate-200 rounded-full px-2.5 py-0.5"
+                                      th:text="${#lists.size(topic.replies)} + (${#lists.size(topic.replies) == 1} ? ' reply' : ' replies')">0 replies</span>
+                            </div>
+
+                            <p th:if="${#lists.isEmpty(topic.replies)}"
+                               class="text-xs text-slate-400 py-1">No replies yet.</p>
+
+                            <ul th:unless="${#lists.isEmpty(topic.replies)}" class="space-y-3">
+                                <li th:each="reply : ${topic.replies}"
+                                    class="rounded-lg bg-white border border-slate-200 px-3 py-2 items-start gap-3">
+                                    <p th:if="${reply.user != null}"
+                                       class="shrink-0 text-xs font-medium text-slate-500 w-24 truncate"
+                                       th:text="${reply.user.credentials.username}">username</p>
+                                    <p class="min-w-0 flex-1 pl-2 text-sm text-slate-700 leading-relaxed whitespace-pre-wrap"
+                                       th:text="${reply.content}">Reply content</p>
+                                </li>
+                            </ul>
+
+                            <!-- Reply form -->
+                            <form th:action="@{/topics/{roomId}/{topicId}/replies(roomId=${room.id}, topicId=${topic.id})}"
+                                  method="post"
+                                  class="mt-4 space-y-3">
+                                <label class="sr-only" th:for="'reply-content-' + ${topic.id}">Write a reply</label>
+                                <textarea th:id="'reply-content-' + ${topic.id}"
+                                          name="content"
+                                          rows="1"
+                                          required
+                                          maxlength="4000"
+                                          placeholder="Write a reply…"
+                                          class="w-full rounded-lg border border-slate-200 bg-white px-3.5 py-2.5 text-sm text-slate-800 placeholder:text-slate-400 shadow-sm focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500/20 resize-y"></textarea>
+                                <div class="flex justify-end">
+                                    <button type="submit"
+                                            class="inline-flex items-center gap-1.5 rounded-lg bg-gradient-to-r from-blue-800 to-cyan-600 px-3.5 py-2 text-sm font-medium text-white shadow-sm hover:from-blue-700 hover:to-cyan-500 transition">
+                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true">
+                                            <path stroke-linecap="round" stroke-linejoin="round" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"/>
+                                        </svg>
+                                        Reply
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+
+                    </article>
+                </div>
             </div>
         </div>
 
