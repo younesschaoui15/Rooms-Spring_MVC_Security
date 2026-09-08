@@ -1,0 +1,7 @@
+package com.chaoui.rooms.exceptions;
+
+public class ContentNotFoundException extends Exception {
+    public ContentNotFoundException(String message) {
+        super(message);
+    }
+}

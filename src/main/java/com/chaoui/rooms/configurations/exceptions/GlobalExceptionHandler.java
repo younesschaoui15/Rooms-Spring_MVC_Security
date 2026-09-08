@@ -1,5 +1,6 @@
 package com.chaoui.rooms.configurations.exceptions;
 
+import com.chaoui.rooms.exceptions.ContentNotFoundException;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -7,6 +8,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.servlet.ModelAndView;
 
 import java.time.Instant;
 import java.util.Map;
@@ -45,5 +47,21 @@ public class GlobalExceptionHandler {
         );
 
         return ResponseEntity.status(httpStatus).body(error);
+    }
+
+    @ExceptionHandler(ContentNotFoundException.class)
+    public ModelAndView handleContentNotFoundException(ContentNotFoundException e) {
+        log.warn("Content Not Found Exception: {}", e.getMessage());
+        e.printStackTrace();
+
+        var httpStatus = HttpStatus.NOT_FOUND;
+
+        ModelAndView modelAndView = new ModelAndView();
+        modelAndView.setViewName("security/not-found");
+        modelAndView.setStatus(httpStatus);
+        modelAndView.addObject("status", httpStatus.value());
+        modelAndView.addObject("message", e.getMessage());
+
+        return modelAndView;
     }
 }
