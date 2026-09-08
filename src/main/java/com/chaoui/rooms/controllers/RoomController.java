@@ -1,7 +1,10 @@
 package com.chaoui.rooms.controllers;
 
+import com.chaoui.rooms.configurations.security.AuthUser;
+import com.chaoui.rooms.exceptions.ContentNotFoundException;
 import com.chaoui.rooms.services.RoomService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -15,19 +18,21 @@ public class RoomController {
 
     private final RoomService roomService;
 
-    @GetMapping("/list")
-    public String list() {
-        return "rooms/list";
-    }
+    @GetMapping("/{id}/topics")
+    public String topics(@PathVariable Long id,
+                         @AuthenticationPrincipal AuthUser authUser,
+                         Model model) throws ContentNotFoundException {
+        var room = roomService.getRoomById(id)
+            .orElseThrow(() -> new ContentNotFoundException("Room Not Found"));
 
-    @GetMapping("/{id}")
-    public String show(@PathVariable Long id, Model model) {
-        var room = roomService.getRoomById(id);
-        var topics = roomService.getRoomTopics(id);
+        if (!roomService.isUserAccessAllowed(room, authUser))
+            throw new ContentNotFoundException("User is not allowed to access this room");
 
-        model.addAttribute("room", room.orElse(null));
+        var topics = room.getTopics();
+
+        model.addAttribute("room", room);
         model.addAttribute("topics", topics);
 
-        return "rooms/detail";
+        return "rooms/topics";
     }
 }

@@ -1,10 +1,12 @@
 package com.chaoui.rooms.services;
 
+import com.chaoui.rooms.configurations.security.AuthUser;
 import com.chaoui.rooms.entities.Room;
 import com.chaoui.rooms.entities.Topic;
 import com.chaoui.rooms.enums.UserRole;
 import com.chaoui.rooms.repositories.RoomRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -28,12 +30,8 @@ public class RoomService {
     }
 
     public List<Room> getRoomsWithRoles(Set<UserRole> roles) {
-        IO.println("# roles: "+ roles);
-        var rooms = roomRepository.findRoomsByAllowedRoles(roles)
+        return roomRepository.findRoomsByAllowedRoles(roles)
             .orElse(Collections.emptyList());
-        IO.println("# rooms: "+ rooms);
-
-        return rooms;
     }
 
     @Transactional(readOnly = true)
@@ -41,5 +39,16 @@ public class RoomService {
         return getRoomById(roomId)
             .map(Room::getTopics)
             .orElse(Collections.emptyList());
+    }
+
+    public boolean isUserAccessAllowed(Room room, AuthUser authUser) {
+        var roomAllowedRoles = room.getAllowedRoles().stream()
+            .map(r -> "ROLE_" + r.name().toUpperCase())
+            .toList();
+        var userRoles = authUser.getAuthorities().stream()
+            .map(GrantedAuthority::getAuthority)
+            .toList();
+
+        return !Collections.disjoint(roomAllowedRoles, userRoles);
     }
 }
