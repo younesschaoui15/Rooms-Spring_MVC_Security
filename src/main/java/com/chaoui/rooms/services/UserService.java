@@ -46,8 +46,8 @@ public class UserService {
     }
 
     @Transactional(readOnly = true)
-    public List<Room> getRooms(@NotBlank String username) {
-        return getUserByUsername(username)
+    public List<Room> getRooms(@NotBlank UUID userId) {
+        return userRepository.findById(userId)
             .map(user -> roomService.getRoomsWithRoles(user.getRoles()))
             .orElse(Collections.emptyList());
     }

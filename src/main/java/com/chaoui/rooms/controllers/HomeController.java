@@ -1,5 +1,6 @@
 package com.chaoui.rooms.controllers;
 
+import com.chaoui.rooms.configurations.security.AuthUser;
 import com.chaoui.rooms.services.RoomService;
 import com.chaoui.rooms.services.UserService;
 import lombok.RequiredArgsConstructor;
@@ -28,7 +29,7 @@ public class HomeController {
 //        System.out.println("# Context: " + context.toString());
 //        System.out.println("# UserDetails: " + authenticatedUser);
 
-        var rooms = userService.getRooms(authenticatedUser.getUsername());
+        var rooms = userService.getRooms(authenticatedUser.getId());
         model.addAttribute("rooms", rooms);
 
         return "home";
