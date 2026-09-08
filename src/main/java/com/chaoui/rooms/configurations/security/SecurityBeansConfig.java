@@ -9,6 +9,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -18,6 +19,7 @@ import org.springframework.security.provisioning.JdbcUserDetailsManager;
 import org.springframework.security.provisioning.UserDetailsManager;
 import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.security.web.authentication.AuthenticationFailureHandler;
+import org.springframework.util.Assert;
 
 import javax.sql.DataSource;
 
@@ -41,14 +43,20 @@ public class SecurityBeansConfig {
             User user = userRepository.findByCredentials_Username(username)
                 .orElseThrow(() -> new UsernameNotFoundException("User Not Found!"));
 
-            String[] userRoles = user.getRoles().stream()
+            var roles = user.getRoles().stream()
                 .map(Enum::name)
-                .toArray(String[]::new);
+                .map(role -> {
+                    Assert.isTrue(!role.startsWith("ROLE_"),
+                        () -> role + " cannot start with ROLE_ (it is automatically added)");
+                    return new SimpleGrantedAuthority("ROLE_" + role);
+                })
+                .toList();
 
-            return org.springframework.security.core.userdetails.User
-                .withUsername(user.getCredentials().getUsername())
+            return AuthUser.builder()
+                .id(user.getId())
+                .username(user.getCredentials().getUsername())
                 .password(user.getCredentials().getPassword())
-                .roles(userRoles)
+                .authorities(roles)
                 .build();
         };
     }
@@ -101,13 +109,13 @@ public class SecurityBeansConfig {
     AuthenticationEntryPoint authenticationEntryPoint() {
         return (request, response, authException) -> {
             log.warn("Authentication is required for request [{}] : {}", request.getRequestURL(), authException.getMessage());
-            response.sendRedirect(request.getContextPath() + "/login?error="+authException.getMessage());
+            response.sendRedirect(request.getContextPath() + "/login?error=" + authException.getMessage());
         };
     }
 
     /*
-    * Login failure handler (ex: logging in with invalid username or password)
-    * */
+     * Login failure handler (ex: logging in with invalid username or password)
+     * */
     @Bean("loginFailureHandler")
     AuthenticationFailureHandler loginFailureHandler() {
         return (request, response, authException) -> {

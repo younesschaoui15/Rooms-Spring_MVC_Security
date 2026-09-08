@@ -21,7 +21,7 @@ public class HomeController {
     private final UserService userService;
 
     @GetMapping("/")
-    public String home(@AuthenticationPrincipal UserDetails authenticatedUser,
+    public String home(@AuthenticationPrincipal AuthUser authenticatedUser,
                        SecurityContext context,
                        Model model) {
 //        System.out.println("###### Home Controller ######");
