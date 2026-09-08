@@ -1,6 +1,7 @@
 package com.chaoui.rooms.entities;
 
 import com.chaoui.rooms.enums.ContentStatus;
+import com.chaoui.rooms.enums.Importance;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -33,6 +34,10 @@ public class Announcement extends AuditableEntity {
     @Enumerated(EnumType.STRING)
     @Builder.Default
     private ContentStatus status = ContentStatus.PUBLISHED;
+
+    @Enumerated(EnumType.STRING)
+    @Builder.Default
+    private Importance importance = Importance.LOW;
 
     @Column(nullable = false)
     @NotNull

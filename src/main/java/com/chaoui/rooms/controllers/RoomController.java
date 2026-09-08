@@ -1,6 +1,7 @@
 package com.chaoui.rooms.controllers;
 
 import com.chaoui.rooms.configurations.security.AuthUser;
+import com.chaoui.rooms.enums.ContentStatus;
 import com.chaoui.rooms.exceptions.ContentNotFoundException;
 import com.chaoui.rooms.services.RoomService;
 import lombok.RequiredArgsConstructor;
@@ -29,9 +30,13 @@ public class RoomController {
             throw new ContentNotFoundException("User is not allowed to access this room");
 
         var topics = room.getTopics();
+        var announcements = roomService.getFutureAnnouncements(room).stream()
+            .filter(a -> a.getStatus() == ContentStatus.PUBLISHED) //Only published announcements
+            .toList();
 
         model.addAttribute("room", room);
         model.addAttribute("topics", topics);
+        model.addAttribute("announcements", announcements);
 
         return "rooms/topics";
     }

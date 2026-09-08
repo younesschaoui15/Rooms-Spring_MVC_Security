@@ -1,15 +1,18 @@
 package com.chaoui.rooms.services;
 
 import com.chaoui.rooms.configurations.security.AuthUser;
+import com.chaoui.rooms.entities.Announcement;
 import com.chaoui.rooms.entities.Room;
 import com.chaoui.rooms.entities.Topic;
 import com.chaoui.rooms.enums.UserRole;
+import com.chaoui.rooms.repositories.AnnouncementRepository;
 import com.chaoui.rooms.repositories.RoomRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
@@ -20,6 +23,7 @@ import java.util.Set;
 public class RoomService {
 
     private final RoomRepository roomRepository;
+    private final AnnouncementRepository announcementRepository;
 
     public Optional<Room> getRoomById(Long id) {
         return roomRepository.findById(id);
@@ -50,5 +54,11 @@ public class RoomService {
             .toList();
 
         return !Collections.disjoint(roomAllowedRoles, userRoles);
+    }
+
+    public List<Announcement> getFutureAnnouncements(Room room) {
+        var now = LocalDateTime.now();
+
+        return announcementRepository.findByRoomsAndExpirationDateTimeAfterOrderByExpirationDateTimeAsc(room, now);
     }
 }

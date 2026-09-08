@@ -1,6 +1,7 @@
 package com.chaoui.rooms.utils;
 
 import com.chaoui.rooms.entities.*;
+import com.chaoui.rooms.enums.Importance;
 import com.chaoui.rooms.enums.UserRole;
 import com.chaoui.rooms.exceptions.RoomAccessDeniedException;
 import com.chaoui.rooms.services.RoomService;
@@ -60,11 +61,45 @@ public class InitDatabaseSchema {
                 .name("IT Room")
                 .description("Room only for geeks")
                 .allowedRoles(Set.of(UserRole.DEVELOPER, UserRole.TEAM_LEAD))
+                .announcements(List.of(
+                    Announcement.builder()
+                        .importance(Importance.CRITICAL)
+                        .expirationDateTime(LocalDateTime.now().plusDays(1))
+                        .content("Production deploy freeze starts tonight — merge only hotfix branches.")
+                        .build(),
+                    Announcement.builder()
+                        .importance(Importance.HIGH)
+                        .expirationDateTime(LocalDateTime.now().plusDays(3))
+                        .content("Security patch review meeting on Friday. Bring open CVEs.")
+                        .build(),
+                    Announcement.builder()
+                        .importance(Importance.MEDIUM)
+                        .expirationDateTime(LocalDateTime.now().plusDays(7))
+                        .content("Update your local JDK to 21 before next Monday.")
+                        .build(),
+                    Announcement.builder()
+                        .importance(Importance.LOW)
+                        .expirationDateTime(LocalDateTime.now().plusDays(14))
+                        .content("New sticky notes arrived in the kitchen. Grab some for your desk.")
+                        .build()
+                ))
                 .build(),
             Room.builder()
                 .name("Managers Room")
                 .description("Room only for managers")
                 .allowedRoles(Set.of(UserRole.PROJECT_MANAGER))
+                .announcements(List.of(
+                    Announcement.builder()
+                        .importance(Importance.HIGH)
+                        .expirationDateTime(LocalDateTime.now().plusDays(2))
+                        .content("Sprint planning slides due before standup tomorrow.")
+                        .build(),
+                    Announcement.builder()
+                        .importance(Importance.MEDIUM)
+                        .expirationDateTime(LocalDateTime.now().plusDays(5))
+                        .content("Quarterly budget estimates need your sign-off.")
+                        .build()
+                ))
                 .build(),
             Room.builder()
                 .name("Managers & POs Room")
@@ -72,6 +107,7 @@ public class InitDatabaseSchema {
                 .allowedRoles(Set.of(UserRole.PRODUCT_OWNER, UserRole.PROJECT_MANAGER))
                 .announcements(List.of(
                     Announcement.builder()
+                        .importance(Importance.MEDIUM)
                         .expirationDateTime(LocalDateTime.now().plusDays(10))
                         .content("Don't forget to finish your tasks for this sprint!")
                         .build()
