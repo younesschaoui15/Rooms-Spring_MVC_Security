@@ -51,7 +51,14 @@ public class InitDatabaseSchema {
         );
 
         return users.stream()
-            .map(userService::registerNewUser)
+            .map(userDTO -> {
+                try {
+                    return userService.registerNewUser(userDTO);
+                } catch (UserExistsException e) {
+                    return null;
+                }
+            })
+            .filter(Objects::nonNull)
             .toList();
     }
 
@@ -111,7 +118,7 @@ public class InitDatabaseSchema {
     public List<Topic> initTopics(UUID userId, Long roomId) {
         String text = "Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem";
 
-        int maxTopics = new Random().nextInt(10)+1;
+        int maxTopics = new Random().nextInt(10) + 1;
         List<Topic> topics = IntStream.rangeClosed(1, maxTopics)
             .mapToObj(i -> Topic.builder()
                 .title("Topic " + i + " - Room: " + roomId)

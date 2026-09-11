@@ -1,6 +1,7 @@
 package com.chaoui.rooms.configurations.exceptions;
 
 import com.chaoui.rooms.exceptions.ContentNotFoundException;
+import com.chaoui.rooms.exceptions.UserExistsException;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -44,6 +45,22 @@ public class GlobalExceptionHandler {
             "Datetime", Instant.now(),
             "Status", httpStatus.value(),
             "Message", "Entity not found"
+        );
+
+        return ResponseEntity.status(httpStatus).body(error);
+    }
+
+    @ExceptionHandler(UserExistsException.class)
+    public ResponseEntity<Map<String, Object>> handleException(UserExistsException e) {
+        log.error("User Exists Exception: {}", e.getMessage());
+        e.printStackTrace();
+
+        var httpStatus = HttpStatus.CONFLICT;
+
+        Map<String, Object> error = Map.of(
+            "Datetime", Instant.now(),
+            "Status", httpStatus.value(),
+            "Message", e.getMessage()
         );
 
         return ResponseEntity.status(httpStatus).body(error);
