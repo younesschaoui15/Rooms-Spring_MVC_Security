@@ -22,7 +22,10 @@ public class SecurityFilterChainConfig {
         return http
             .csrf(conf -> conf
                 //For testing REST API
-                .ignoringRequestMatchers("/administration/new-user")
+                .ignoringRequestMatchers(
+                    "/administration/new-user",
+                    "/administration/delete-user"
+                )
             )
             .authorizeHttpRequests(conf -> conf
                 .requestMatchers(

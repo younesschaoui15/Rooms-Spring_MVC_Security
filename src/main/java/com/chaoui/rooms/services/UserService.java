@@ -1,7 +1,10 @@
 package com.chaoui.rooms.services;
 
+import com.chaoui.rooms.DTOs.RegisterUserReqDTO;
 import com.chaoui.rooms.entities.Room;
 import com.chaoui.rooms.entities.User;
+import com.chaoui.rooms.entities.UserCredentials;
+import com.chaoui.rooms.exceptions.UserExistsException;
 import com.chaoui.rooms.repositories.UserRepository;
 import jakarta.validation.constraints.NotBlank;
 import lombok.RequiredArgsConstructor;
@@ -23,31 +26,49 @@ public class UserService {
     private final RoomService roomService;
 
     @Transactional
-    public User registerNewUser(User user) {
-        user.getCredentials().setPassword(
-            bCryptPasswordEncoder.encode(user.getCredentials().getPassword())
-        );
+    public User registerNewUser(RegisterUserReqDTO userReqDTO) {
+        getUserByUsername(userReqDTO.username())
+            .ifPresentOrElse(u -> {
+                throw new UserExistsException(userReqDTO.username());
+            }, () -> userRepository.findByEmail(userReqDTO.email())
+                .ifPresent(u -> {
+                    throw new UserExistsException(userReqDTO.email());
+                }));
+
+        User user = User.builder()
+            .firstName(userReqDTO.firstName())
+            .lastName(userReqDTO.lastName())
+            .email(userReqDTO.email())
+            .enabled(userReqDTO.enabled())
+            .roles(userReqDTO.roles())
+            .credentials(
+                UserCredentials.builder()
+                    .username(userReqDTO.username())
+                    .password(bCryptPasswordEncoder.encode(userReqDTO.password()))
+                    .build()
+            )
+            .build();
+
+        user.getCredentials().setUser(user);
 
         return userRepository.save(user);
     }
 
-    public UUID deleteUser(User user) {
-        userRepository.delete(user);
-
-        return user.getId();
+    public void deleteUserById(UUID userId) {
+        userRepository.deleteById(userId);
     }
 
     public Optional<User> getUserByUsername(String username) {
         return userRepository.findByCredentials_Username(username);
     }
 
-    public User getUserById(UUID id) {
-        return userRepository.findById(id).orElse(null);
+    public Optional<User> getUserById(UUID id) {
+        return userRepository.findById(id);
     }
 
     @Transactional(readOnly = true)
     public List<Room> getRooms(@NotBlank UUID userId) {
-        return userRepository.findById(userId)
+        return getUserById(userId)
             .map(user -> roomService.getRoomsWithRoles(user.getRoles()))
             .orElse(Collections.emptyList());
     }

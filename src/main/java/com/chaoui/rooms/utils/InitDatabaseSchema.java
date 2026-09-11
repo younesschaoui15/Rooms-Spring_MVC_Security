@@ -1,10 +1,12 @@
 package com.chaoui.rooms.utils;
 
+import com.chaoui.rooms.DTOs.RegisterUserReqDTO;
 import com.chaoui.rooms.entities.*;
 import com.chaoui.rooms.enums.Importance;
 import com.chaoui.rooms.enums.UserRole;
 import com.chaoui.rooms.exceptions.ContentNotFoundException;
 import com.chaoui.rooms.exceptions.RoomAccessDeniedException;
+import com.chaoui.rooms.exceptions.UserExistsException;
 import com.chaoui.rooms.services.RoomService;
 import com.chaoui.rooms.services.TopicService;
 import com.chaoui.rooms.services.UserService;
@@ -32,22 +34,23 @@ public class InitDatabaseSchema {
 
     @Transactional
     public List<User> initUsers() {
-        List<User> users = List.of(
-            User.builder().firstName("Youness").lastName("CHAOUI").email("admin1@mail.com").enabled(true)
+        List<RegisterUserReqDTO> users = List.of(
+            RegisterUserReqDTO.builder().firstName("Youness").lastName("CHAOUI").email("admin1@mail.com").enabled(true)
                 .roles(Set.of(UserRole.APP_ADMIN, UserRole.APP_SUPER_ADMIN))
-                .credentials(new UserCredentials(null, "admin1", "admin1", null)).build(),
-            User.builder().firstName("Ahmad").lastName("AHMADI").email("dev1@mail.com").enabled(true)
+                .username("admin1").password("admin1")
+                .build(),
+            RegisterUserReqDTO.builder().firstName("Ahmad").lastName("AHMADI").email("dev1@mail.com").enabled(true)
                 .roles(Set.of(UserRole.DEVELOPER, UserRole.TEAM_LEAD))
-                .credentials(new UserCredentials(null, "dev1", "dev1", null)).build(),
-            User.builder().firstName("Siham").lastName("SIHAMI").email("dev2@mail.com").enabled(true)
+                .username("dev1").password("dev1").build(),
+            RegisterUserReqDTO.builder().firstName("Siham").lastName("SIHAMI").email("dev2@mail.com").enabled(true)
                 .roles(Set.of(UserRole.DEVELOPER))
-                .credentials(new UserCredentials(null, "dev2", "dev2", null)).build(),
-            User.builder().firstName("Samira").lastName("SAMIRI").email("manager1@mail.com").enabled(true)
+                .username("dev2").password("dev2").build(),
+            RegisterUserReqDTO.builder().firstName("Samira").lastName("SAMIRI").email("manager1@mail.com").enabled(true)
                 .roles(Set.of(UserRole.PROJECT_MANAGER))
-                .credentials(new UserCredentials(null, "manager1", "manager1", null)).build(),
-            User.builder().firstName("Halima").lastName("HALIMI").email("po1@mail.com").enabled(true)
+                .username("manager1").password("manager1").build(),
+            RegisterUserReqDTO.builder().firstName("Halima").lastName("HALIMI").email("po1@mail.com").enabled(true)
                 .roles(Set.of(UserRole.PRODUCT_OWNER))
-                .credentials(new UserCredentials(null, "po1", "po1", null)).build()
+                .username("po1").password("po1").build()
         );
 
         return users.stream()
