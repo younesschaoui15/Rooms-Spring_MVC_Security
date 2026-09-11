@@ -57,65 +57,51 @@ public class InitDatabaseSchema {
 
     @Transactional
     public List<Room> initRooms() {
+        //Announcements
+        Announcement a1 = Announcement.builder()
+            .importance(Importance.CRITICAL)
+            .expirationDateTime(LocalDateTime.now().plusDays(1))
+            .content("Production deploy freeze starts tonight — merge only hotfix branches.")
+            .build();
+        Announcement a2 = Announcement.builder()
+            .importance(Importance.HIGH)
+            .expirationDateTime(LocalDateTime.now().plusDays(3))
+            .content("Security patch review meeting on Friday. Bring open CVEs.")
+            .build();
+        Announcement a3 = Announcement.builder()
+            .importance(Importance.HIGH)
+            .expirationDateTime(LocalDateTime.now().plusDays(2))
+            .content("Sprint planning slides due before standup tomorrow.")
+            .build();
+        Announcement a4 = Announcement.builder()
+            .importance(Importance.MEDIUM)
+            .expirationDateTime(LocalDateTime.now().plusDays(5))
+            .content("Quarterly budget estimates need your sign-off.")
+            .build();
+
+        //Rooms
         List<Room> rooms = List.of(
             Room.builder()
                 .name("IT Room")
                 .description("Room only for geeks")
                 .allowedRoles(Set.of(UserRole.DEVELOPER, UserRole.TEAM_LEAD))
-                .announcements(List.of(
-                    Announcement.builder()
-                        .importance(Importance.CRITICAL)
-                        .expirationDateTime(LocalDateTime.now().plusDays(1))
-                        .content("Production deploy freeze starts tonight — merge only hotfix branches.")
-                        .build(),
-                    Announcement.builder()
-                        .importance(Importance.HIGH)
-                        .expirationDateTime(LocalDateTime.now().plusDays(3))
-                        .content("Security patch review meeting on Friday. Bring open CVEs.")
-                        .build(),
-                    Announcement.builder()
-                        .importance(Importance.MEDIUM)
-                        .expirationDateTime(LocalDateTime.now().plusDays(7))
-                        .content("Update your local JDK to 21 before next Monday.")
-                        .build(),
-                    Announcement.builder()
-                        .importance(Importance.LOW)
-                        .expirationDateTime(LocalDateTime.now().plusDays(14))
-                        .content("New sticky notes arrived in the kitchen. Grab some for your desk.")
-                        .build()
-                ))
+                .announcements(List.of(a1, a2))
                 .build(),
             Room.builder()
                 .name("Managers Room")
                 .description("Room only for managers")
                 .allowedRoles(Set.of(UserRole.PROJECT_MANAGER))
-                .announcements(List.of(
-                    Announcement.builder()
-                        .importance(Importance.HIGH)
-                        .expirationDateTime(LocalDateTime.now().plusDays(2))
-                        .content("Sprint planning slides due before standup tomorrow.")
-                        .build(),
-                    Announcement.builder()
-                        .importance(Importance.MEDIUM)
-                        .expirationDateTime(LocalDateTime.now().plusDays(5))
-                        .content("Quarterly budget estimates need your sign-off.")
-                        .build()
-                ))
+                .announcements(List.of(a2, a3, a4))
                 .build(),
             Room.builder()
                 .name("Managers & POs Room")
                 .description("Room for managers and product owners")
                 .allowedRoles(Set.of(UserRole.PRODUCT_OWNER, UserRole.PROJECT_MANAGER))
-                .announcements(List.of(
-                    Announcement.builder()
-                        .importance(Importance.MEDIUM)
-                        .expirationDateTime(LocalDateTime.now().plusDays(10))
-                        .content("Don't forget to finish your tasks for this sprint!")
-                        .build()
-                ))
+                .announcements(List.of(a3, a4))
                 .build()
         );
 
+        //Create rooms with announcements
         return rooms.stream()
             .map(roomService::createRoom)
             .toList();
@@ -147,27 +133,5 @@ public class InitDatabaseSchema {
             .toList();
 
         return topics;
-    }
-
-    @Transactional
-    public Optional<UUID> deleteUserById(UUID id) {
-        try {
-            User user = userService.getUserById(id);
-            return Optional.of(userService.deleteUser(user));
-        } catch (Exception e) {
-            System.err.println("# Error (deleteUserById) : " + e.getMessage());
-            return Optional.empty();
-        }
-    }
-
-    @Transactional
-    protected Optional<UUID> deleteUserByUsername(String username) {
-        try {
-            User user = userService.getUserByUsername(username).orElseThrow();
-            return Optional.of(userService.deleteUser(user));
-        } catch (Exception e) {
-            System.err.println("# Error (deleteUserByUsername) : " + e.getMessage());
-            return Optional.empty();
-        }
     }
 }

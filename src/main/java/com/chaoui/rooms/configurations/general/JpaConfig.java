@@ -1,5 +1,6 @@
 package com.chaoui.rooms.configurations.general;
 
+import com.chaoui.rooms.configurations.security.AuthUser;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.domain.AuditorAware;
@@ -20,7 +21,7 @@ public class JpaConfig {
             .filter(Authentication::isAuthenticated)
             .map(Authentication::getPrincipal)
             .filter(UserDetails.class::isInstance)
-            .map(UserDetails.class::cast)
-            .map(UserDetails::getUsername);
+            .map(AuthUser.class::cast)
+            .map(AuthUser::getUsername);
     }
 }

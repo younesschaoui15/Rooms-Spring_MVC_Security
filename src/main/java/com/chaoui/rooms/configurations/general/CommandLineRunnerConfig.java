@@ -9,7 +9,6 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -90,39 +89,6 @@ public class CommandLineRunnerConfig {
             IO.println("\n");
         } catch (InterruptedException e) {
             throw new RuntimeException(e);
-        }
-    }
-
-    void deleteUsers(List<User> users, InitDatabaseSchema initDatabaseSchema) {
-        try {
-            final int maxSecs = 5;
-            System.out.println("> Waiting " + maxSecs + " seconds...");
-
-            //Waiting countdown
-            new Thread(() -> {
-                int _maxSecs = maxSecs;
-                while (_maxSecs > 0) {
-                    try {
-                        System.out.println("> [" + _maxSecs + "]");
-                        _maxSecs--;
-                        TimeUnit.SECONDS.sleep(1);
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
-                }
-            }).start();
-
-            Thread.sleep(maxSecs * 1000);
-
-            int userIndex = 1;
-            User userToDelete = users.get(userIndex);
-            System.out.println("# Deleting User: " + userToDelete);
-            var id = initDatabaseSchema.deleteUserById(userToDelete.getId());
-            System.out.println("######### User deleted: " + id.orElse(null));
-//                id = initDatabaseSchema.deleteUserByUsername(users.get(1).getCredentials().getUsername());
-//                System.out.println("######### User deleted: " + id.orElse(null));
-        } catch (InterruptedException e) {
-            e.printStackTrace();
         }
     }
 }
