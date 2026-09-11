@@ -3,8 +3,8 @@ package com.chaoui.rooms.services;
 import com.chaoui.rooms.DTOs.RegisterUserReqDTO;
 import com.chaoui.rooms.entities.Room;
 import com.chaoui.rooms.entities.User;
-import com.chaoui.rooms.entities.UserCredentials;
 import com.chaoui.rooms.exceptions.UserExistsException;
+import com.chaoui.rooms.mappers.UserMapper;
 import com.chaoui.rooms.repositories.UserRepository;
 import jakarta.validation.constraints.NotBlank;
 import lombok.RequiredArgsConstructor;
@@ -24,6 +24,7 @@ public class UserService {
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
     private final UserRepository userRepository;
     private final RoomService roomService;
+    private final UserMapper userMapper;
 
     @Transactional
     public User registerNewUser(RegisterUserReqDTO userReqDTO) {
@@ -35,20 +36,7 @@ public class UserService {
                     throw new UserExistsException(userReqDTO.email());
                 }));
 
-        User user = User.builder()
-            .firstName(userReqDTO.firstName())
-            .lastName(userReqDTO.lastName())
-            .email(userReqDTO.email())
-            .enabled(userReqDTO.enabled())
-            .roles(userReqDTO.roles())
-            .credentials(
-                UserCredentials.builder()
-                    .username(userReqDTO.username())
-                    .password(bCryptPasswordEncoder.encode(userReqDTO.password()))
-                    .build()
-            )
-            .build();
-
+        User user = userMapper.toEntity(userReqDTO);
         user.getCredentials().setUser(user);
 
         return userRepository.save(user);
