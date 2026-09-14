@@ -8,4 +8,10 @@ spring:
   profiles:
     active: dev
 
+  mvc:
+    apiversion:
+      use:
+        #API path segment index
+        path-segment: 1
+
 

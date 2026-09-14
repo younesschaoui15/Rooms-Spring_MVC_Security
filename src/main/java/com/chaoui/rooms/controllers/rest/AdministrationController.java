@@ -1,4 +1,4 @@
-package com.chaoui.rooms.controllers;
+package com.chaoui.rooms.controllers.rest;
 
 import com.chaoui.rooms.DTOs.RegisterUserReqDTO;
 import com.chaoui.rooms.DTOs.RegisterUserResDTO;
@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.UUID;
 
 @RestController
-@RequestMapping("/administration")
+@RequestMapping(value = "/api/{version}/administration", version = "1")
 @PreAuthorize("hasAnyRole('APP_ADMIN', 'APP_SUPERADMIN')")
 @RequiredArgsConstructor
 public class AdministrationController {
@@ -34,6 +34,6 @@ public class AdministrationController {
     public ResponseEntity<String> deleteUser(@RequestParam("id") UUID userId) {
         userService.deleteUserById(userId);
 
-        return ResponseEntity.ok("User deleted successfully");
+        return ResponseEntity.ok("User with id='"+userId+"' deleted successfully");
     }
 }
