@@ -5,3 +5,6 @@ target/
 *.iml
 
 .env
+
+Dockerfile
+docker-compose.yaml
