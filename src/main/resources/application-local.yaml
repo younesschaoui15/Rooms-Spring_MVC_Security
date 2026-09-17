@@ -1,9 +1,9 @@
 spring:
   datasource:
     #PostgreSQL db (in the host machine)
-    url: ${SPRING_DATASOURCE_URL:jdbc:postgresql://localhost:5432/rooms-dev-db}
+    url: ${SPRING_DATASOURCE_URL:jdbc:postgresql://localhost:5432/rooms-db}
     username: ${SPRING_DATASOURCE_USERNAME:postgres}
-    password: ${SPRING_DATASOURCE_PASSWORD:postgres}
+    password: ${SPRING_DATASOURCE_PASSWORD:admin}
   jpa:
     hibernate:
       ddl-auto: ${SPRING_JPA_HIBERNATE_DDL_AUTO:update}

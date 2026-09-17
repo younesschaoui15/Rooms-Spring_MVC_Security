@@ -6,12 +6,15 @@ spring:
     name: Rooms - Spring MVC Security
 
   profiles:
-    active: dev
+    active: ${SPRING_PROFILES_ACTIVE:local}
 
-  mvc:
-    apiversion:
-      use:
-        #API path segment index
-        path-segment: 1
+#  mvc:
+#    apiversion:
+#      use:
+#        #API path segment index
+#        path-segment: 1
+#      required: false
+#      default: 1
+
 
 
