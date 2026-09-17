@@ -109,7 +109,12 @@ public class SecurityBeansConfig {
     AuthenticationEntryPoint authenticationEntryPoint() {
         return (request, response, authException) -> {
             log.warn("Authentication is required for request [{}] : {}", request.getRequestURL(), authException.getMessage());
-            response.sendRedirect(request.getContextPath() + "/login?error=" + authException.getMessage());
+
+            String loginLocation = request.getContextPath() + "/login";
+            if (!request.getRequestURI().equals("/"))
+                loginLocation += "?error=" + authException.getMessage();
+
+            response.sendRedirect(loginLocation);
         };
     }
 
