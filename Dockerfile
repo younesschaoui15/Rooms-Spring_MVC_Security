@@ -31,10 +31,17 @@ WORKDIR /app
 
 #Copy from the previous Docker stage "build" (as build)
 #Copy *.jar to /app/app.jar
-COPY --from=build /app/target/*.jar app.jar
+COPY --from=build /app/target/*.jar rooms-app.jar
+
+#Environment variables (override at "docker run" time with -e, ex: -e SPRING_DATASOURCE_PASSWORD=secret)
+ENV SPRING_PROFILES_ACTIVE=dev
+ENV SPRING_DATASOURCE_URL=jdbc:postgresql://host.docker.internal:5432/rooms-dev-db
+ENV SPRING_DATASOURCE_USERNAME=postgres
+ENV SPRING_DATASOURCE_PASSWORD=postgres
+ENV SPRING_JPA_HIBERNATE_DDL_AUTO=validate
 
 #Exposed server port
 EXPOSE 8080
 
 #EntryPoint is the command to execute when the container starts
-ENTRYPOINT ["java", "-jar", "app.jar"]
+ENTRYPOINT ["java", "-jar", "rooms-app.jar"]
